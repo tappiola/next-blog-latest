@@ -1,13 +1,26 @@
-'use server';
+"use server";
+import prisma from "../lib/prisma";
+
+export const getPost = async (id: string) => {
+  return prisma.post.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      author: {
+        select: { name: true },
+      },
+    },
+  });
+};
+
 export const getPosts = async () => {
-    return [{
-        id: "1",
-        title: "Prisma is the perfect ORM for Next.js",
-        content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-        published: false,
-        author: {
-            name: "Jiggly Puff",
-            email: "jigglypuff@prisma.io",
-        },
-    }]
-}
+  return prisma.post.findMany({
+    where: { published: true },
+    include: {
+      author: {
+        select: { name: true },
+      },
+    },
+  });
+};
